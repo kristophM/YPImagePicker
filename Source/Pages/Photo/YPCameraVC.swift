@@ -19,7 +19,8 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
 
     public required init() {
 //        self.v = YPCameraView(overlayView: YPConfig.overlayView)
-        self.v = YPCameraView(filterView: FilterView())
+        // TODO: Make this configurable rather than hard coded
+        self.v = YPCameraView(filterView: FilterView(frame: .zero, withGrid: true))
         super.init(nibName: nil, bundle: nil)
         title = YPConfig.wordings.cameraTitle
     }
@@ -38,6 +39,7 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         // Focus
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(self.focusTapped(_:)))
         tapRecognizer.delegate = self
+
         v.previewViewContainer.addGestureRecognizer(tapRecognizer)
     }
     
@@ -59,6 +61,11 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         doAfterPermissionCheck { [weak self] in
             self?.focus(recognizer: recognizer)
         }
+    }
+    
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        print("should receive tap")
+        return true
     }
     
     func focus(recognizer: UITapGestureRecognizer) {

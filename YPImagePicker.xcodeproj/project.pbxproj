@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		735B992C214AFF36002F4718 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735B992B214AFF36002F4718 /* GridView.swift */; };
 		99019E4C2018CCD6007325C2 /* YPBottomPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99019E4B2018CCD6007325C2 /* YPBottomPagerView.swift */; };
 		99019E4E2018CD31007325C2 /* YPPagerMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99019E4D2018CD31007325C2 /* YPPagerMenu.swift */; };
 		99019E512018CDED007325C2 /* YPImageSize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99019E502018CDED007325C2 /* YPImageSize.swift */; };
@@ -100,6 +101,7 @@
 		5F01F9DC20DCC494007432E4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		65BBCBAE2101BA4200277809 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7157B4CA206FD7270004EF6C /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		735B992B214AFF36002F4718 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		99019E4B2018CCD6007325C2 /* YPBottomPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YPBottomPagerView.swift; sourceTree = "<group>"; };
 		99019E4D2018CD31007325C2 /* YPPagerMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YPPagerMenu.swift; sourceTree = "<group>"; };
 		99019E502018CDED007325C2 /* YPImageSize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YPImageSize.swift; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 				99C6D6B41F1FB5C100711DB2 /* YPPhotoSaver.swift */,
 				99B8C4C2208F8EE900127119 /* YPLoadingView.swift */,
 				99CF6D26201B739600487F77 /* YPAlerts.swift */,
+				735B992B214AFF36002F4718 /* GridView.swift */,
 				990FD28E201A49D3002A39A1 /* YPPermissionCheckable.swift */,
 				EB94F28D208E3A140049F523 /* YPLoaders.swift */,
 			);
@@ -623,6 +626,7 @@
 				EBD66105208104EA00EA276E /* YPIcons.swift in Sources */,
 				EB473E1F208E1BCC00D16105 /* AVMutableComposition+Extensions.swift in Sources */,
 				99472DED2056E33700419F9E /* YPWordings.swift in Sources */,
+				735B992C214AFF36002F4718 /* GridView.swift in Sources */,
 				99A0529F1F20B480005600B3 /* YPAlbumCell.swift in Sources */,
 				99C6D6BC1F1FB5C100711DB2 /* YPLibraryView.swift in Sources */,
 				99A3C91220319231008D7E23 /* YPCropVC.swift in Sources */,

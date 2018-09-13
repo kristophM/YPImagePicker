@@ -36,7 +36,7 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
             self.filterView = filterView
         }
         // Don't show previewView
-        previewViewContainer.alpha = 0
+        previewViewContainer.alpha = 0.001 // (instead of zero, to allow for touch events)
         
         setup(overlayView: filterView)
     }
@@ -116,6 +116,33 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
     }
 }
 
-class FilterView: UIImageView {
+class FilterView: UIView {
+    // A UIImageView with an optional Grid view on top
+    private var imageView = UIImageView()
+    var gridView = GridView()
+    var image: UIImage? {
+        didSet {
+            imageView.image = image
+            gridView.backgroundColor = UIColor.white.withAlphaComponent(0.001) // Bug: Cannot put alpha of zero here, so put a really small value
+        }
+    }
+    convenience init(frame: CGRect, withGrid: Bool = false) {
+        self.init(frame: frame)
+        // Adds grid layer on top (if applicable) and config layout
+        if withGrid == true {
+            sv(
+                imageView,
+                gridView
+            )
+            gridView.fillContainer()
+        } else {
+            sv(imageView)
+        }
+        imageView.fillContainer()
+        
+    }
     
+    @objc func didTap(_ sender: UITapGestureRecognizer) {
+        print("tapped")
+    }
 }

@@ -27,7 +27,7 @@ class YPCropVC: UIViewController {
     override func loadView() { view = v }
     
     required init(image: UIImage, ratio: Double) {
-        v = YPCropView(image: image, ratio: ratio)
+        v = YPCropView(image: image, ratio: ratio, shouldShowGrid: true) // TODO: Put this as an option rather than hardcoding
         originalImage = image
         super.init(nibName: nil, bundle: nil)
         self.title = YPConfig.wordings.crop

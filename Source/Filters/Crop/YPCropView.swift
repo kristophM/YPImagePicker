@@ -16,9 +16,12 @@ class YPCropView: UIView {
     let cropArea = UIView()
     let bottomCurtain = UIView()
     let toolbar = UIToolbar()
+    let gridView = GridView()
+    var shouldShowGrid = false
 
-    convenience init(image: UIImage, ratio: Double) {
+    convenience init(image: UIImage, ratio: Double, shouldShowGrid: Bool) {
         self.init(frame: .zero)
+        self.shouldShowGrid = shouldShowGrid
         setupViewHierarchy()
         setupLayout(with: image, ratio: ratio)
         applyStyle()
@@ -26,13 +29,24 @@ class YPCropView: UIView {
     }
     
     private func setupViewHierarchy() {
-        sv(
-            imageView,
-            topCurtain,
-            cropArea,
-            bottomCurtain,
-            toolbar
-        )
+        if shouldShowGrid == true {
+            sv(
+                imageView,
+                topCurtain,
+                cropArea,
+                bottomCurtain,
+                gridView,
+                toolbar
+            )
+        } else {
+            sv(
+                imageView,
+                topCurtain,
+                cropArea,
+                bottomCurtain,
+                toolbar
+            )
+        }
     }
     
     private func setupLayout(with image: UIImage, ratio: Double) {
@@ -69,6 +83,12 @@ class YPCropView: UIView {
         
         // Fit imageView to image's bounds
         imageView.Width == imageView.Height * CGFloat(imageRatio)
+        
+        // Grid view
+        if shouldShowGrid == true {
+            equal(sizes: gridView, cropArea)
+            alignCenter(gridView, with: cropArea)
+        }
     }
     
     private func applyStyle() {
@@ -87,6 +107,9 @@ class YPCropView: UIView {
         toolbar.style { t in
             t.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
             t.setShadowImage(UIImage(), forToolbarPosition: .any)
+        }
+        if shouldShowGrid == true {
+            gridView.backgroundColor = UIColor.white.withAlphaComponent(0.001)
         }
     }
     
