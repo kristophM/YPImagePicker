@@ -35,6 +35,8 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
         if let filterView = filterView {
             self.filterView = filterView
         }
+        // Don't show previewView
+        previewViewContainer.alpha = 0
         
         setup(overlayView: filterView)
     }

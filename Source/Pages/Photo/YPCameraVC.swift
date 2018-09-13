@@ -137,9 +137,9 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
                     correctedOrientation = .up
                 }
                 
-                let noOrietationImage = image.resetOrientation(withOriginalOrientation: correctedOrientation)
+                let img = image.resetOrientation(withOriginalOrientation: correctedOrientation).squared()!
                 // TODO: Take a square image
-                self.didCapturePhoto?(noOrietationImage.applyFilter(withName: "CIPhotoEffectMono").resizedImageIfNeeded()) // TODO: Enum for filter
+                self.didCapturePhoto?(img.applyFilter(withName: "CIPhotoEffectMono").resizedImageIfNeeded()) // TODO: Enum for filter
             }
         }
     }
