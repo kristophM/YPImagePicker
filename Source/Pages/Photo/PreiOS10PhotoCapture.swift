@@ -11,13 +11,15 @@ import AVFoundation
 import UIKit
 
 class PreiOS10PhotoCapture: YPPhotoCapture {
-
+    var videoDelegate: AVCaptureVideoDataOutputSampleBufferDelegate?
     let sessionQueue = DispatchQueue(label: "YPCameraVCSerialQueue", qos: .background)
     let session = AVCaptureSession()
     var deviceInput: AVCaptureDeviceInput?
     var device: AVCaptureDevice? { return deviceInput?.device }
     private let imageOutput = AVCaptureStillImageOutput()
+    private let videoOutput = AVCaptureVideoDataOutput()
     var output: AVCaptureOutput { return imageOutput }
+    var vOutput: AVCaptureVideoDataOutput { return videoOutput }
     var isCaptureSessionSetup: Bool = false
     var isPreviewSetup: Bool = false
     var previewView: UIView!
@@ -30,7 +32,7 @@ class PreiOS10PhotoCapture: YPPhotoCapture {
     
     // MARK: - Configuration
     
-    func configure() { }
+    func configure() {}
     
     // MARK: - Flash
     

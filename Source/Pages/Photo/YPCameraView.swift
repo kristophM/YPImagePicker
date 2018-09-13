@@ -19,10 +19,27 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
     let flashButton = UIButton()
     let timeElapsedLabel = UILabel()
     let progressBar = UIProgressView()
+    var filterView: FilterView?
+    
 
     convenience init(overlayView: UIView? = nil) {
         self.init(frame: .zero)
         
+        setup(overlayView: overlayView)
+    }
+    
+    convenience init(filterView: FilterView? = nil) {
+        self.init(frame: .zero)
+        
+        // Set filterView if applicable
+        if let filterView = filterView {
+            self.filterView = filterView
+        }
+        
+        setup(overlayView: filterView)
+    }
+    
+    fileprivate func setup(overlayView: UIView?) {
         if let overlayView = overlayView {
             // View Hierarchy
             sv(
@@ -63,12 +80,12 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
             0
         )
         previewViewContainer.heightEqualsWidth()
-
+        
         overlayView?.followEdges(previewViewContainer)
-
+        
         |-(15+sideMargin)-flashButton.size(42)
         flashButton.Bottom == previewViewContainer.Bottom - 15
-
+        
         flipButton.size(42)-(15+sideMargin)-|
         flipButton.Bottom == previewViewContainer.Bottom - 15
         
@@ -77,7 +94,7 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
         
         shotButton.centerVertically()
         shotButton.size(84).centerHorizontally()
-
+        
         // Style
         backgroundColor = YPConfig.colors.photoVideoScreenBackground
         previewViewContainer.backgroundColor = .black
@@ -95,4 +112,8 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
         flipButton.setImage(YPConfig.icons.loopIcon, for: .normal)
         shotButton.setImage(YPConfig.icons.capturePhotoImage, for: .normal)
     }
+}
+
+class FilterView: UIImageView {
+    
 }

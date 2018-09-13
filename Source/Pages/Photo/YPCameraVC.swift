@@ -18,7 +18,8 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
     override public func loadView() { view = v }
 
     public required init() {
-        self.v = YPCameraView(overlayView: YPConfig.overlayView)
+//        self.v = YPCameraView(overlayView: YPConfig.overlayView)
+        self.v = YPCameraView(filterView: FilterView())
         super.init(nibName: nil, bundle: nil)
         title = YPConfig.wordings.cameraTitle
     }
@@ -45,7 +46,7 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
             guard let strongSelf = self else {
                 return
             }
-            self?.photoCapture.start(with: strongSelf.v.previewViewContainer, completion: {
+            self?.photoCapture.start(with: strongSelf.v.previewViewContainer, using: self!, completion: {
                 DispatchQueue.main.async {
                     self?.refreshFlashButton()
                 }
@@ -122,8 +123,23 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
             }
             
             DispatchQueue.main.async {
-                let noOrietationImage = image.resetOrientation()
-                self.didCapturePhoto?(noOrietationImage.resizedImageIfNeeded())
+                var correctedOrientation: UIImageOrientation!
+                switch UIDevice.current.orientation {
+                case .portrait, .faceUp, .faceDown:
+                    correctedOrientation = .up
+                case .landscapeLeft:
+                    correctedOrientation = .left
+                case .landscapeRight:
+                    correctedOrientation = .right
+                case .portraitUpsideDown:
+                    correctedOrientation = .down
+                case .unknown:
+                    correctedOrientation = .up
+                }
+                
+                let noOrietationImage = image.resetOrientation(withOriginalOrientation: correctedOrientation)
+                // TODO: Take a square image
+                self.didCapturePhoto?(noOrietationImage.applyFilter(withName: "CIPhotoEffectMono").resizedImageIfNeeded()) // TODO: Enum for filter
             }
         }
     }
@@ -175,5 +191,25 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         let flashImage = photoCapture.currentFlashMode.flashImage()
         v.flashButton.setImage(flashImage, for: .normal)
         v.flashButton.isHidden = !photoCapture.hasFlash
+    }
+}
+
+extension YPCameraVC: AVCaptureVideoDataOutputSampleBufferDelegate {
+    public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        // Apply filter to live video stream
+        if let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+            let cameraImage = CIImage(cvPixelBuffer: pixelBuffer)
+            if let filterEffect = CIFilter(name: "CIPhotoEffectMono") { // TODO: Abstract this out
+                filterEffect.setValue(cameraImage, forKey: kCIInputImageKey)
+                let filteredCIImage = filterEffect.value(forKey: kCIOutputImageKey) as! CIImage
+                let filteredImage = filteredCIImage.toUIImage()
+                if let fv = self.v.filterView, let sqImage = filteredImage.squared() {
+                    DispatchQueue.main.async {
+                        fv.image = sqImage.resetOrientation(withOriginalOrientation: .right)
+                    }
+                }
+            }
+            
+        }
     }
 }

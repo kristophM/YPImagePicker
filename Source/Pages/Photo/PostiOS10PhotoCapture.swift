@@ -11,13 +11,15 @@ import AVFoundation
 
 @available(iOS 10.0, *)
 class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDelegate {
-
+    var videoDelegate: AVCaptureVideoDataOutputSampleBufferDelegate?
     let sessionQueue = DispatchQueue(label: "YPCameraVCSerialQueue", qos: .background)
     let session = AVCaptureSession()
     var deviceInput: AVCaptureDeviceInput?
     var device: AVCaptureDevice? { return deviceInput?.device }
     private let photoOutput = AVCapturePhotoOutput()
+    private let videoOutput = AVCaptureVideoDataOutput()
     var output: AVCaptureOutput { return photoOutput }
+    var vOutput: AVCaptureVideoDataOutput { return videoOutput }
     var isCaptureSessionSetup: Bool = false
     var isPreviewSetup: Bool = false
     var previewView: UIView!
@@ -28,6 +30,7 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
         return device.hasFlash
     }
     var block: ((Data) -> Void)?
+    
     
     // MARK: - Configuration
     
@@ -71,6 +74,11 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
         
         // Improve capture time by preparing output with the desired settings.
         photoOutput.setPreparedPhotoSettingsArray([newSettings()], completionHandler: nil)
+        
+        // Video output will be used to apply filter
+        if let videoDelegate = videoDelegate {
+            videoOutput.setSampleBufferDelegate(videoDelegate, queue: sessionQueue)
+        }
     }
     
     // MARK: - Flash

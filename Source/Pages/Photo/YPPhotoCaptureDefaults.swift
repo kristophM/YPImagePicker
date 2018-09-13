@@ -13,9 +13,10 @@ extension YPPhotoCapture {
     
     // MARK: - Setup
     
-    private func setupCaptureSession() {
+    private func setupCaptureSession(with videoDelegate: AVCaptureVideoDataOutputSampleBufferDelegate) {
         session.beginConfiguration()
         session.sessionPreset = .photo
+        self.videoDelegate = videoDelegate
         let cameraPosition: AVCaptureDevice.Position = YPConfig.usesFrontCamera ? .front : .back
         let aDevice = deviceForPosition(cameraPosition)
         if let d = aDevice {
@@ -25,8 +26,9 @@ extension YPPhotoCapture {
             if session.canAddInput(videoInput) {
                 session.addInput(videoInput)
             }
-            if session.canAddOutput(output) {
+            if session.canAddOutput(output) && session.canAddOutput(vOutput) {
                 session.addOutput(output)
+                session.addOutput(vOutput)
                 configure()
             }
         }
@@ -36,14 +38,14 @@ extension YPPhotoCapture {
     
     // MARK: - Start/Stop Camera
     
-    func start(with previewView: UIView, completion: @escaping () -> Void) {
+    func start(with previewView: UIView, using videoDelegate: AVCaptureVideoDataOutputSampleBufferDelegate, completion: @escaping () -> Void) {
         self.previewView = previewView
         sessionQueue.async { [weak self] in
             guard let strongSelf = self else {
                 return
             }
             if !strongSelf.isCaptureSessionSetup {
-                strongSelf.setupCaptureSession()
+                strongSelf.setupCaptureSession(with: videoDelegate)
             }
             strongSelf.startCamera(completion: {
                 completion()

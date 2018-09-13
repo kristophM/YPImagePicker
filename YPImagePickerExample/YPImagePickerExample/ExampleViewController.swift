@@ -47,6 +47,12 @@ class ExampleViewController: UIViewController {
         resultsButton.addTarget(self, action: #selector(showResults), for: .touchUpInside)
         view.addSubview(resultsButton)
     }
+    
+    // TODO: TEMP
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showPicker()
+    }
 
     @objc
     func showResults() {
@@ -111,7 +117,7 @@ class ExampleViewController: UIViewController {
 
         /* Defines which screens are shown at launch, and their order.
            Default value is `[.library, .photo]` */
-        config.screens = [.library, .photo, .video]
+        config.screens = [.photo]
         
         /* Can forbid the items with very big height with this property */
 //        config.library.minWidthForItem = UIScreen.main.bounds.width * 0.8
@@ -128,10 +134,10 @@ class ExampleViewController: UIViewController {
         config.showsCrop = .rectangle(ratio: (16/9))
 
         /* Defines the overlay view for the camera. Defaults to UIView(). */
-        // let overlayView = UIView()
-        // overlayView.backgroundColor = .red
-        // overlayView.alpha = 0.3
-        // config.overlayView = overlayView
+//         let overlayView = UIView()
+//         overlayView.backgroundColor = .red
+//         overlayView.alpha = 0.3
+//         config.overlayView = overlayView
 
         /* Customize wordings */
         config.wordings.libraryTitle = "Gallery"

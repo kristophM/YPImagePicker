@@ -9,6 +9,19 @@
 import UIKit
 
 internal extension UIImage {
+    var isPortrait:  Bool    { return size.height > size.width }
+    var isLandscape: Bool    { return size.width > size.height }
+    var breadth:     CGFloat { return min(size.width, size.height) }
+    var breadthSize: CGSize  { return CGSize(width: breadth, height: breadth) }
+    var breadthRect: CGRect  { return CGRect(origin: .zero, size: breadthSize) }
+    
+    func squared() -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(breadthSize, false, scale)
+        defer { UIGraphicsEndImageContext() }
+        guard let cgImage = cgImage?.cropping(to: CGRect(origin: CGPoint(x: isLandscape ? floor((size.width - size.height) / 2) : 0, y: isPortrait  ? floor((size.height - size.width) / 2) : 0), size: breadthSize)) else { return nil }
+        UIImage(cgImage: cgImage).draw(in: breadthRect)
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
     
     func resized(to size: CGSize) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
@@ -19,16 +32,22 @@ internal extension UIImage {
     
     /// Kudos to Trevor Harmon and his UIImage+Resize category from
     // which this code is heavily inspired.
-    func resetOrientation() -> UIImage {
-        
+    func resetOrientation(withOriginalOrientation originalOrientation: UIImageOrientation? = nil) -> UIImage {
+//        print("image orientation \(imageOrientation.rawValue)")
+        var orientation = UIImageOrientation.up
+        if let originalOrientation = originalOrientation {
+            orientation = originalOrientation
+        } else {
+            orientation = imageOrientation
+        }
         // Image has no orientation, so keep the same
-        if imageOrientation == .up {
+        if orientation == .up {
             return self
         }
         
         // Process the transform corresponding to the current orientation
         var transform = CGAffineTransform.identity
-        switch imageOrientation {
+        switch orientation {
         case .down, .downMirrored:           // EXIF = 3, 4
             transform = transform.translatedBy(x: size.width, y: size.height)
             transform = transform.rotated(by: CGFloat(Double.pi))
@@ -44,7 +63,7 @@ internal extension UIImage {
             ()
         }
         
-        switch imageOrientation {
+        switch orientation {
         case .upMirrored, .downMirrored:     // EXIF = 2, 4
             transform = transform.translatedBy(x: size.width, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
@@ -65,7 +84,7 @@ internal extension UIImage {
                                 space: cgImage!.colorSpace!,
                                 bitmapInfo: cgImage!.bitmapInfo.rawValue)
         context?.concatenate(transform)
-        switch imageOrientation {
+        switch orientation {
         case .left, .leftMirrored, .right, .rightMirrored:
             context?.draw(cgImage!, in: CGRect(x: 0, y: 0, width: size.height, height: size.width))
         default:
@@ -115,5 +134,16 @@ internal extension UIImage {
     
     func toCIImage() -> CIImage? {
         return self.ciImage ?? CIImage(cgImage: self.cgImage!)
+    }
+    
+    func applyFilter(withName filterName: String) -> UIImage {
+        // TODO: Put filters in enum or something
+        if let ciImage = self.toCIImage(), let filterEffect = CIFilter(name: filterName) {
+                filterEffect.setValue(ciImage, forKey: kCIInputImageKey)
+                let filteredCIImage = filterEffect.value(forKey: kCIOutputImageKey) as! CIImage
+                let filteredImage = filteredCIImage.toUIImage()
+                return filteredImage.squared()?.resetOrientation(withOriginalOrientation: .right) ?? self
+        }
+        return self
     }
 }
