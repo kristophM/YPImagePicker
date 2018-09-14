@@ -99,6 +99,28 @@ class ExampleViewController: UIViewController {
 //                          YPFilter(name: "Normal", coreImageFilterName: "")]
 //        config.filters.remove(at: 1)
 //        config.filters.insert(YPFilter(name: "Blur", coreImageFilterName: "CIBoxBlur"), at: 1)
+        let filterNames = ["CIDepthOfField",
+            "CISharpenLuminance",
+            "CIVignetteEffect",
+            "CIVignette",
+            "CIPhotoEffectTransfer",
+            "CIPhotoEffectTonal",
+            "CIPhotoEffectNoir",
+            "CIPhotoEffectMono"]
+        
+        
+        
+        config.filters = filterNames.map { name in
+            let blender: (CIImage) -> CIImage? = { image in
+                if #available(iOS 11.0, *) {
+                    return image.applyingFilter("CIPhotoEffectMono").applyingFilter(name)
+                } else {
+                    // Fallback on earlier versions
+                    return nil
+                }
+            }
+            return YPFilter(name: name, applier: blender)
+        }
 
         /* Enables you to opt out from saving new (or old but filtered) images to the
            user's photo library. Defaults to true. */
@@ -117,7 +139,7 @@ class ExampleViewController: UIViewController {
 
         /* Defines which screens are shown at launch, and their order.
            Default value is `[.library, .photo]` */
-        config.screens = [.photo]
+        config.screens = [.photo, .library]
         
         /* Can forbid the items with very big height with this property */
 //        config.library.minWidthForItem = UIScreen.main.bounds.width * 0.8
@@ -193,10 +215,10 @@ class ExampleViewController: UIViewController {
                 switch firstItem {
                 case .photo(let photo):
                     self.selectedImageV.image = photo.image
+                    YPPhotoSaver.trySaveImage(photo.modifiedImage!, inAlbumNamed: "GRYSCL")
                     picker.dismiss(animated: true, completion: nil)
                 case .video(let video):
                     self.selectedImageV.image = video.thumbnail
-                    
                     let assetURL = video.url
                     let playerVC = AVPlayerViewController()
                     let player = AVPlayer(playerItem: AVPlayerItem(url:assetURL))

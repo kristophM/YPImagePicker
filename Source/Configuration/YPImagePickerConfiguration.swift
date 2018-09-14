@@ -28,6 +28,9 @@ public struct YPImagePickerConfiguration {
     // Video configuration
     public var video = YPConfigVideo()
     
+    // Photo configuration
+    public var photo = YPConfigPhoto()
+    
     /// Use this property to modify the default wordings provided.
     public var wordings = YPWordings()
     
@@ -148,6 +151,11 @@ public struct YPImagePickerConfiguration {
     
 }
 
+/// Encapsulates photo specific settings
+public struct YPConfigPhoto {
+    public var controls: [YPPhotoControl] = [.flash]
+}
+
 /// Encapsulates library specific settings.
 public struct YPConfigLibrary {
     
@@ -212,4 +220,9 @@ public enum YPlibraryMediaType {
     case photo
     case video
     case photoAndVideo
+}
+
+public enum YPPhotoControl {
+    case flash
+    case flip
 }
