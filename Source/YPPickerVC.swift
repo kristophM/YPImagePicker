@@ -64,9 +64,9 @@ public class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         // Camera
         if YPConfig.screens.contains(.photo) {
             cameraVC = YPCameraVC()
-            cameraVC?.didCapturePhoto = { [weak self] (img, rawURL) in
+            cameraVC?.didCapturePhoto = { [weak self] (img, rawURL, metadata) in
                 self?.didSelectItems?([YPMediaItem.photo(p: YPMediaPhoto(image: img,
-                                                                         fromCamera: true, rawImageURL: rawURL))])
+                                                                         fromCamera: true, rawImageURL: rawURL, metadata: metadata))])
             }
         }
         

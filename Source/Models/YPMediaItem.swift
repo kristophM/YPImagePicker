@@ -21,14 +21,16 @@ public class YPMediaPhoto {
     public let exifMeta : [String : Any]?
     public var asset: PHAsset?
     public var rawImageURL: URL?
+    public var metadata: [String: Any]?
     
-    init(image: UIImage, exifMeta : [String : Any]? = nil, fromCamera: Bool = false, asset: PHAsset? = nil, rawImageURL: URL? = nil) {
+    init(image: UIImage, exifMeta : [String : Any]? = nil, fromCamera: Bool = false, asset: PHAsset? = nil, rawImageURL: URL? = nil, metadata: [String: Any]? = nil) {
         self.originalImage = image
         self.modifiedImage = nil
         self.fromCamera = fromCamera
         self.exifMeta = exifMeta
         self.asset = asset
         self.rawImageURL = rawImageURL
+        self.metadata = metadata
     }
 }
 

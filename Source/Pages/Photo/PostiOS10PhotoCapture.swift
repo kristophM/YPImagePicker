@@ -30,11 +30,12 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
         guard let device = device else { return false }
         return device.hasFlash
     }
-    var block: ((Data, URL?) -> Void)?
+    var block: ((Data, URL?, [String: Any]?) -> Void)?
     
     // Raw file manipulation
     var rawImageFileURL: URL?
     var compressedFileData: Data?
+    var metadata: [String: Any]?
     
     
     // MARK: - Configuration
@@ -104,7 +105,9 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
     
     // MARK: - Shoot
 
-    func shoot(completion: @escaping (Data, URL?) -> Void) {
+    func shoot(completion: @escaping (Data, URL?, [String: Any]?) -> Void) {
+        
+        
         block = completion
     
         // Set current device orientation
@@ -117,6 +120,14 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
     @available(iOS 11.0, *)
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         guard error == nil, let data = photo.fileDataRepresentation() else { print("Error capturing photo: \(error!)"); return }
+        
+        // TODO: Temp
+        if let imgSrc = CGImageSourceCreateWithData(data as CFData, nil) {
+            if let metadata = CGImageSourceCopyPropertiesAtIndex(imgSrc, 0, nil) as? [String : Any] {
+                self.metadata = metadata
+            }
+        }
+        
         if photo.isRawPhoto {
             // Save the RAW (DNG) file data to a URL.
             let dngFileURL = self.makeUniqueTempFileURL(extension: "dng")
@@ -141,7 +152,7 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
         if let data = AVCapturePhotoOutput
             .jpegPhotoDataRepresentation(forJPEGSampleBuffer: buffer,
                                          previewPhotoSampleBuffer: previewPhotoSampleBuffer) {
-            block?(data, nil)
+            block?(data, nil, metadata)
         }
     }
     
@@ -150,7 +161,7 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
         guard let rawURL = self.rawImageFileURL, let compressedData = self.compressedFileData
             else { return }
 
-        block?(compressedData, rawURL)
+        block?(compressedData, rawURL, metadata)
     }
     
 //    func handlePhotoLibraryError(success: Bool, error: Error?) {

@@ -11,6 +11,7 @@ import YPImagePicker
 import AVFoundation
 import AVKit
 import Photos
+import CoreLocation
 
 class ExampleViewController: UIViewController {
     var selectedItems = [YPMediaItem]()
@@ -18,6 +19,7 @@ class ExampleViewController: UIViewController {
     let selectedImageV = UIImageView()
     let pickButton = UIButton()
     let resultsButton = UIButton()
+    var locationManager: CLLocationManager!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +48,9 @@ class ExampleViewController: UIViewController {
                                      height: 100)
         resultsButton.addTarget(self, action: #selector(showResults), for: .touchUpInside)
         view.addSubview(resultsButton)
+        locationManager = CLLocationManager()
+        locationManager.requestWhenInUseAuthorization()
+        
     }
     
     // TODO: TEMP
