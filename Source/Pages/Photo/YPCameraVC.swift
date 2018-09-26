@@ -12,7 +12,7 @@ import Photos
 
 public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermissionCheckable {
     
-    public var didCapturePhoto: ((UIImage) -> Void)?
+    public var didCapturePhoto: ((UIImage, URL?) -> Void)?
     let photoCapture = newPhotoCapture()
     let v: YPCameraView!
     override public func loadView() { view = v }
@@ -110,7 +110,7 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         // causing a crash
         v.shotButton.isEnabled = false
         
-        photoCapture.shoot { imageData in
+        photoCapture.shoot { (imageData, rawImageURL) in
             
             guard let shotImage = UIImage(data: imageData) else {
                 return
@@ -145,8 +145,7 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
                 }
                 
                 let img = image.resetOrientation(withOriginalOrientation: correctedOrientation).squared()!
-                // TODO: Take a square image
-                self.didCapturePhoto?(img.applyFilter(withName: "CIPhotoEffectMono").resizedImageIfNeeded()) // TODO: Enum for filter
+                self.didCapturePhoto?(img.applyFilter(withName: "CIPhotoEffectMono").resizedImageIfNeeded(), rawImageURL) // TODO: Enum for filter
             }
         }
     }

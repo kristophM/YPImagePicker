@@ -58,13 +58,13 @@ class PreiOS10PhotoCapture: YPPhotoCapture {
     
     // MARK: - Shoot
     
-    func shoot(completion: @escaping (Data) -> Void) {
+    func shoot(completion: @escaping (Data, URL?) -> Void) {
         DispatchQueue.global(qos: .default).async {
             self.setCurrentOrienation()
             if let connection = self.output.connection(with: .video) {
                 self.imageOutput.captureStillImageAsynchronously(from: connection) { buffer, _ in
                     if let data = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(buffer!) {
-                        completion(data)
+                        completion(data, nil)
                     }
                 }
             }

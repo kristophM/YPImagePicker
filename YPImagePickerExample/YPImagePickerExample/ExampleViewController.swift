@@ -215,7 +215,26 @@ class ExampleViewController: UIViewController {
                 switch firstItem {
                 case .photo(let photo):
                     self.selectedImageV.image = photo.image
-                    YPPhotoSaver.trySaveImage(photo.modifiedImage!, inAlbumNamed: "GRYSCL")
+                    YPPhotoSaver.trySaveImage(photo.modifiedImage!, inAlbumNamed: "GRYSCL", rawImageURL: photo.rawImageURL, completion: { localIdentifier in 
+                        print("localIdentifer for PHAsset: \(localIdentifier)")
+                        // TODO: REMOVE THIS: Just for testing
+                        let asset = PHAsset.fetchAssets(withLocalIdentifiers: [localIdentifier], options: PHFetchOptions()).firstObject!
+                        let resources = PHAssetResource.assetResources(for: asset)
+                        for resource in resources {
+                            print(resource.type)
+                            if resource.uniformTypeIdentifier == "com.adobe.raw-image" {
+                                var rawImageData = Data()
+                                PHAssetResourceManager().requestData(for: resource, options: nil, dataReceivedHandler: { (data) in
+                                    print("data received")
+                                    rawImageData.append(data)
+                                }, completionHandler: { (error) in
+                                    print(error)
+                                    print(rawImageData)
+                                    // TODO: DO stuff to data 
+                                })
+                            }
+                        }
+                    })
                     picker.dismiss(animated: true, completion: nil)
                 case .video(let video):
                     self.selectedImageV.image = video.thumbnail

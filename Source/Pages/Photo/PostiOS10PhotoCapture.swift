@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import Photos
 
 @available(iOS 10.0, *)
 class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDelegate {
@@ -29,23 +30,29 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
         guard let device = device else { return false }
         return device.hasFlash
     }
-    var block: ((Data) -> Void)?
+    var block: ((Data, URL?) -> Void)?
+    
+    // Raw file manipulation
+    var rawImageFileURL: URL?
+    var compressedFileData: Data?
     
     
     // MARK: - Configuration
     
     private func newSettings() -> AVCapturePhotoSettings {
-        var settings = AVCapturePhotoSettings()
-        
-        // Catpure Heif when available.
-        if #available(iOS 11.0, *) {
-            if photoOutput.availablePhotoCodecTypes.contains(.hevc) {
-                settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.hevc])
-            }
+        guard let availableRawFormat = self.photoOutput.availableRawPhotoPixelFormatTypes.first, #available(iOS 11.0, *) else {
+            return AVCapturePhotoSettings() // TODO: INCOMPLETE
         }
+        // Use the current device's first available RAW format.
+        var settings = AVCapturePhotoSettings(rawPixelFormatType: availableRawFormat, processedFormat: [AVVideoCodecKey : AVVideoCodecType.hevc])
         
-        // Catpure Highest Quality possible.
+//         Catpure Highest Quality possible.
         settings.isHighResolutionPhotoEnabled = true
+    
+        
+        // RAW capture is incompatible with digital image stabilization.
+        settings.isAutoStillImageStabilizationEnabled = false
+        
         
         // Set flash mode.
         if let deviceInput = deviceInput {
@@ -97,7 +104,7 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
     
     // MARK: - Shoot
 
-    func shoot(completion: @escaping (Data) -> Void) {
+    func shoot(completion: @escaping (Data, URL?) -> Void) {
         block = completion
     
         // Set current device orientation
@@ -109,8 +116,19 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
 
     @available(iOS 11.0, *)
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        guard let data = photo.fileDataRepresentation() else { return }
-        block?(data)
+        guard error == nil, let data = photo.fileDataRepresentation() else { print("Error capturing photo: \(error!)"); return }
+        if photo.isRawPhoto {
+            // Save the RAW (DNG) file data to a URL.
+            let dngFileURL = self.makeUniqueTempFileURL(extension: "dng")
+            do {
+                try data.write(to: dngFileURL)
+                self.rawImageFileURL = dngFileURL
+            } catch {
+                fatalError("couldn't write DNG file to URL")
+            }
+        } else {
+            self.compressedFileData = photo.fileDataRepresentation()!
+        }
     }
         
     func photoOutput(_ output: AVCapturePhotoOutput,
@@ -123,7 +141,28 @@ class PostiOS10PhotoCapture: NSObject, YPPhotoCapture, AVCapturePhotoCaptureDele
         if let data = AVCapturePhotoOutput
             .jpegPhotoDataRepresentation(forJPEGSampleBuffer: buffer,
                                          previewPhotoSampleBuffer: previewPhotoSampleBuffer) {
-            block?(data)
+            block?(data, nil)
         }
+    }
+    
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
+        guard error == nil else { print("Error capturing photo: \(error!)"); return }
+        guard let rawURL = self.rawImageFileURL, let compressedData = self.compressedFileData
+            else { return }
+
+        block?(compressedData, rawURL)
+    }
+    
+//    func handlePhotoLibraryError(success: Bool, error: Error?) {
+//        guard error == nil else { print("Error handling photoLibrary \(error!)"); return}
+//        block(self.compressedFileData!, )
+//    }
+    
+    func makeUniqueTempFileURL(extension type: String) -> URL {
+        let temporaryDirectoryURL = FileManager.default.temporaryDirectory
+        let uniqueFilename = ProcessInfo.processInfo.globallyUniqueString
+        let urlNoExt = temporaryDirectoryURL.appendingPathComponent(uniqueFilename)
+        let url = urlNoExt.appendingPathExtension(type)
+        return url
     }
 }
