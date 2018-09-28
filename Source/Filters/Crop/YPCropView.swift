@@ -15,9 +15,9 @@ class YPCropView: UIView {
     let topCurtain = UIView()
     let cropArea = UIView()
     let bottomCurtain = UIView()
-    let toolbar = UIToolbar()
     let gridView = GridView()
     var shouldShowGrid = false
+    let cropInstructions = UILabel()
 
     convenience init(image: UIImage, ratio: Double, shouldShowGrid: Bool) {
         self.init(frame: .zero)
@@ -36,15 +36,14 @@ class YPCropView: UIView {
                 cropArea,
                 bottomCurtain,
                 gridView,
-                toolbar
+                cropInstructions
             )
         } else {
             sv(
                 imageView,
                 topCurtain,
                 cropArea,
-                bottomCurtain,
-                toolbar
+                bottomCurtain
             )
         }
     }
@@ -57,16 +56,10 @@ class YPCropView: UIView {
             |bottomCurtain|,
             0
         )
-        |toolbar|
-        if #available(iOS 11.0, *) {
-            toolbar.Bottom == safeAreaLayoutGuide.Bottom
-        } else {
-            toolbar.bottom(0)
-        }
         
         let r: CGFloat = CGFloat(1.0 / ratio)
         cropArea.Height == cropArea.Width * r
-        cropArea.centerVertically()
+        cropArea.top(0)
         
         // Fit image differently depnding on its ratio.
         let imageRatio: Double = Double(image.size.width / image.size.height)
@@ -89,6 +82,12 @@ class YPCropView: UIView {
             equal(sizes: gridView, cropArea)
             alignCenter(gridView, with: cropArea)
         }
+        // Crop instructions
+        if let cropText = CameraConfig.shared.cropText {
+            cropInstructions.Top == cropArea.Bottom + 50
+            cropInstructions.left(50)
+            cropInstructions.right(50)
+        }
     }
     
     private func applyStyle() {
@@ -104,12 +103,12 @@ class YPCropView: UIView {
             v.isUserInteractionEnabled = false
         }
         bottomCurtain.style(curtainStyle)
-        toolbar.style { t in
-            t.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
-            t.setShadowImage(UIImage(), forToolbarPosition: .any)
-        }
         if shouldShowGrid == true {
             gridView.backgroundColor = UIColor.white.withAlphaComponent(0.001)
+        }
+        if let cropText = CameraConfig.shared.cropText {
+            cropInstructions.attributedText = cropText
+            cropInstructions.textAlignment = .center
         }
     }
     

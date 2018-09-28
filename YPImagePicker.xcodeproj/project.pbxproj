@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		732E7674215ED0F300BE4F41 /* CameraConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732E7673215ED0F300BE4F41 /* CameraConfig.swift */; };
 		735B992C214AFF36002F4718 /* GridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 735B992B214AFF36002F4718 /* GridView.swift */; };
 		99019E4C2018CCD6007325C2 /* YPBottomPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99019E4B2018CCD6007325C2 /* YPBottomPagerView.swift */; };
 		99019E4E2018CD31007325C2 /* YPPagerMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99019E4D2018CD31007325C2 /* YPPagerMenu.swift */; };
@@ -101,6 +102,7 @@
 		5F01F9DC20DCC494007432E4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		65BBCBAE2101BA4200277809 /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = id.lproj/Localizable.strings; sourceTree = "<group>"; };
 		7157B4CA206FD7270004EF6C /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		732E7673215ED0F300BE4F41 /* CameraConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraConfig.swift; sourceTree = "<group>"; };
 		735B992B214AFF36002F4718 /* GridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridView.swift; sourceTree = "<group>"; };
 		99019E4B2018CCD6007325C2 /* YPBottomPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YPBottomPagerView.swift; sourceTree = "<group>"; };
 		99019E4D2018CD31007325C2 /* YPPagerMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YPPagerMenu.swift; sourceTree = "<group>"; };
@@ -247,6 +249,7 @@
 				EBD66106208104F400EA276E /* YPColors.swift */,
 				99019E502018CDED007325C2 /* YPImageSize.swift */,
 				99019E522018CE19007325C2 /* YPPickerScreen.swift */,
+				732E7673215ED0F300BE4F41 /* CameraConfig.swift */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -605,6 +608,7 @@
 				EB584BFF207B883A00265B38 /* YPSelectionsGalleryCell.swift in Sources */,
 				99278DB02051816F0059532E /* YPPhotoCaptureDefaults.swift in Sources */,
 				99C6D6CE1F1FB5C100711DB2 /* YPPhotoSaver.swift in Sources */,
+				732E7674215ED0F300BE4F41 /* CameraConfig.swift in Sources */,
 				99C6D6C31F1FB5C100711DB2 /* YPCameraView.swift in Sources */,
 				99019E562018D008007325C2 /* YPMenuItem.swift in Sources */,
 				9915D9D32087E692003FC307 /* YPLibrarySelection.swift in Sources */,

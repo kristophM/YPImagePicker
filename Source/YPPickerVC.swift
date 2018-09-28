@@ -46,6 +46,14 @@ public class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Stylize nav bar
+        navigationController?.navigationBar.tintColor = CameraConfig.shared.navbarTintColor
+        navigationController?.navigationBar.barTintColor = CameraConfig.shared.navbarBarTintColor
+        if let titleView = CameraConfig.shared.navbarTitleView {
+            navigationItem.titleView = titleView
+        }
+        
+        
         view.backgroundColor = UIColor(r: 247, g: 247, b: 247)
         
         delegate = self
@@ -262,6 +270,7 @@ public class YPPickerVC: YPBottomPager, YPBottomPagerDelegate {
         
         titleView.heightAnchor.constraint(equalToConstant: 40).isActive = true
         navigationItem.titleView = titleView
+        navigationController?.navigationBar.backgroundColor = .black
     }
     
     func updateUI() {

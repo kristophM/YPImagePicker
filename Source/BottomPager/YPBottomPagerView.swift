@@ -17,23 +17,33 @@ final class YPBottomPagerView: UIView {
     convenience init() {
         self.init(frame: .zero)
         backgroundColor = UIColor(red: 239/255, green: 238/255, blue: 237/255, alpha: 1)
-        
-        sv(
-            scrollView,
-            header
-        )
-        
-        layout(
-            0,
-            |scrollView|,
-            0,
-            |header| ~ 44
-        )
-        
-        if #available(iOS 11.0, *) {
-            header.Bottom == safeAreaLayoutGuide.Bottom
+        let shouldShowBottomPager = CameraConfig.shared.showBottomPagerView
+        if shouldShowBottomPager == true {
+            sv(
+                scrollView,
+                header
+            )
+            
+            
+            layout(
+                0,
+                |scrollView|,
+                0,
+                |header| ~ 44
+            )
+            
+            if #available(iOS 11.0, *) {
+                header.Bottom == safeAreaLayoutGuide.Bottom
+            } else {
+                header.bottom(0)
+            }
         } else {
-            header.bottom(0)
+            sv(
+                scrollView
+            )
+            
+            scrollView.fillContainer()
+        
         }
         
         clipsToBounds = false

@@ -86,6 +86,7 @@ public struct YPImagePickerConfiguration {
     
     /// Defines the text colour to be shown when a bottom option is unselected
     public var bottomMenuItemUnSelectedColour = UIColor(r: 153, g: 153, b: 153)
+
     
     /// List of default filters which will be added on the filter screen
     public var filters: [YPFilter] = [
@@ -154,6 +155,9 @@ public struct YPImagePickerConfiguration {
 /// Encapsulates photo specific settings
 public struct YPConfigPhoto {
     public var controls: [YPPhotoControl] = [.flash]
+    // Custom styling
+    public var shotButtonImage: UIImage = imageFromBundle("yp_iconCapture")
+    public var backgroundColor: UIColor = .white
 }
 
 /// Encapsulates library specific settings.

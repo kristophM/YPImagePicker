@@ -77,6 +77,7 @@ class ExampleViewController: UIViewController {
     func showPicker() {
         
         var config = YPImagePickerConfiguration()
+        var cameraConfig = CameraConfig.shared
 
         /* Uncomment and play around with the configuration 👨‍🔬 🚀 */
 
@@ -126,6 +127,13 @@ class ExampleViewController: UIViewController {
             }
             return YPFilter(name: name, applier: blender)
         }
+        cameraConfig.backgroundColor = .black
+        cameraConfig.showBottomPagerView = false
+        cameraConfig.shotButton = #imageLiteral(resourceName: "shot_button")
+        cameraConfig.navbarTintColor = .blue
+        cameraConfig.navbarBarTintColor = .black
+        cameraConfig.cropText = NSAttributedString(string: "Zoom And Crop", attributes: nil)
+//        cameraConfig.navbarTitleView = UIView()
 
         /* Enables you to opt out from saving new (or old but filtered) images to the
            user's photo library. Defaults to true. */
@@ -140,11 +148,11 @@ class ExampleViewController: UIViewController {
 
         /* Defines which screen is shown at launch. Video mode will only work if `showsVideo = true`.
            Default value is `.photo` */
-        config.startOnScreen = .library
+        config.startOnScreen = .photo
 
         /* Defines which screens are shown at launch, and their order.
            Default value is `[.library, .photo]` */
-        config.screens = [.photo, .library]
+        config.screens = [.photo]
         
         /* Can forbid the items with very big height with this property */
 //        config.library.minWidthForItem = UIScreen.main.bounds.width * 0.8

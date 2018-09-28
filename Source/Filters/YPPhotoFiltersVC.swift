@@ -47,7 +47,7 @@ open class YPPhotoFiltersVC: UIViewController, IsMediaFilterVC, UIGestureRecogni
 
     override open func viewDidLoad() {
         super.viewDidLoad()
-        
+        view.backgroundColor = CameraConfig.shared.backgroundColor
         // Setup of main image an thumbnail images
         v.imageView.image = inputPhoto.image
         thumbnailImageForFiltering = thumbFromImage(inputPhoto.image)
@@ -97,6 +97,16 @@ open class YPPhotoFiltersVC: UIViewController, IsMediaFilterVC, UIGestureRecogni
         v.imageView.isUserInteractionEnabled = true
     }
     
+    open override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let titleView = CameraConfig.shared.navbarTitleView {
+            navigationItem.titleView = titleView
+        }
+        if let backButton = CameraConfig.shared.backButtonImage {
+            navigationItem.backBarButtonItem = UIBarButtonItem(image: backButton, style: .plain, target: self, action: #selector(didSelectBack))
+        }
+    }
+    
     // MARK: Setup - ⚙️
     
     fileprivate func setupRightBarButton() {
@@ -119,6 +129,10 @@ open class YPPhotoFiltersVC: UIViewController, IsMediaFilterVC, UIGestureRecogni
             v.imageView.image = currentlySelectedImageThumbnail ?? inputPhoto.originalImage
         default: ()
         }
+    }
+    
+    @objc func didSelectBack(_ sender: UIBarButtonItem) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     fileprivate func thumbFromImage(_ img: UIImage) -> CIImage {

@@ -112,7 +112,7 @@ class YPCameraView: UIView, UIGestureRecognizerDelegate {
         }
         flashButton.setImage(YPConfig.icons.flashOffIcon, for: .normal)
         flipButton.setImage(YPConfig.icons.loopIcon, for: .normal)
-        shotButton.setImage(YPConfig.icons.capturePhotoImage, for: .normal)
+        shotButton.setImage(CameraConfig.shared.shotButton, for: .normal)
         
         
         // Selective showing of controls

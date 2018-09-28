@@ -39,25 +39,18 @@ class YPCropVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupToolbar()
         setupGestureRecognizers()
+        view.backgroundColor = CameraConfig.shared.backgroundColor
     }
     
-    func setupToolbar() {
-        let cancelButton = UIBarButtonItem(title: YPConfig.wordings.cancel,
-                                           style: .plain,
-                                           target: self,
-                                           action: #selector(cancel))
-        cancelButton.tintColor = .white
-        
-        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        
-        let saveButton = UIBarButtonItem(title: YPConfig.wordings.save,
-                                           style: .plain,
-                                           target: self,
-                                           action: #selector(done))
-        saveButton.tintColor = .white
-        v.toolbar.items = [cancelButton, flexibleSpace, saveButton]
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let titleView = CameraConfig.shared.navbarTitleView {
+            navigationItem.titleView = titleView
+        }
+        if let backButton = CameraConfig.shared.backButtonImage {
+            navigationItem.backBarButtonItem = UIBarButtonItem(image: backButton, style: .plain, target: self, action: #selector(didSelectBack))
+        }
     }
     
     func setupGestureRecognizers() {
@@ -75,6 +68,10 @@ class YPCropVC: UIViewController {
     @objc
     func cancel() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func didSelectBack(_ sender: UIBarButtonItem) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     @objc

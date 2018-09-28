@@ -41,6 +41,17 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         tapRecognizer.delegate = self
 
         v.previewViewContainer.addGestureRecognizer(tapRecognizer)
+        view.backgroundColor = CameraConfig.shared.backgroundColor
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let titleView = CameraConfig.shared.navbarTitleView {
+            navigationItem.titleView = titleView
+        }
+        if let backButton = CameraConfig.shared.backButtonImage {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(image: backButton, style: .plain, target: self, action: #selector(didSelectBack))
+        }
     }
     
     func start() {
@@ -61,6 +72,10 @@ public class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, YPPermis
         doAfterPermissionCheck { [weak self] in
             self?.focus(recognizer: recognizer)
         }
+    }
+    
+    @objc func didSelectBack(_ sender: UIBarButtonItem) {
+        CameraConfig.shared.didSelectExit()
     }
     
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
